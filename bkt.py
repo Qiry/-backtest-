@@ -1,5 +1,5 @@
 #coding=utf-8
-from WindPy import *
+#backtest with order function, input data type as pandas.dataframe rows:datetime columns:stockcode/name
 import pandas as pd
 import numpy as np
 import random
@@ -14,56 +14,23 @@ plt.rcParams['figure.figsize'] = (16.0, 8.0)
 
 class spec:
     def __init__(self):
-        self.data = pd.read_csv('C:/Users/cheer/Desktop/huicedata.csv',parse_dates=True,index_col=0)
-        self.initial_balance=1000000
-        self.holding_value=0
+        self.data = 
+        self.initial_balance=
+        self.holding_value=
         self.position_df=pd.DataFrame(columns=['持仓日期','持仓量','持仓总市值','股票价格'])
         self.capital_df=pd.DataFrame(columns=['总资产','持仓价值','可用资金'])
         self.output_df=pd.DataFrame()
         self.currentbar=1
-        self.risk_free_rate=0.03
+        self.risk_free_rate=
         self.order_df=pd.DataFrame()
         self.trade_info=pd.DataFrame(columns=['日期','交易方向','交易标的','交易量','成交价格','交易状态'])
         self.showplot=True
-
-
-#output_data.plot()
-
-def find_cointegrated_pairs(dataframe):
-    # 得到DataFrame长度
-    n = dataframe.shape[1]
-    # 初始化p值矩阵
-    pvalue_matrix = np.ones((n, n))
-    # 抽取列的名称
-    keys = dataframe.keys()
-    # 初始化强协整组
-    pairs = []
-    # 对于每一个i
-    for i in range(n):
-        # 对于大于i的j
-        for j in range(i+1, n):
-            # 获取相应的两只股票的价格Series
-            stock1 = dataframe[keys[i]]
-            stock2 = dataframe[keys[j]]
-            # 分析它们的协整关系
-            result = sm.tsa.stattools.coint(stock1[:120], stock2[:120])
-            # 取出并记录p值
-            pvalue = result[1] 
-            corr=stock1[:120].corr(stock2[:120])
-            pvalue_matrix[i, j] = pvalue
-            # 如果p值小于0.05
-            if pvalue < 0.05 and abs(corr)>0.8:
-                # 记录股票对和相应的p值
-                pairs.append((keys[i], keys[j], pvalue,corr))
-    # 返回结果
-    return pvalue_matrix, pairs
 
 def backtest(initialize,context,strategy):
     initialize(context)
     context.current_capital_df=pd.DataFrame({'总资产': context.initial_balance,'持仓价值':0,'可用资金':context.initial_balance},index=[context.date[0]])
     for t in range(0,len(context.date)):
         context.currentbar=t
-#        context.current_capital_df=pd.DataFrame(context.capital_df,columns=context.capital_df.columns,index=[context.capital_df.index[t-1]])
         strategy(context)
 
         
@@ -75,7 +42,6 @@ def backtest(initialize,context,strategy):
         total_assets=available_fund+holding_value
         context.current_capital_df=pd.DataFrame({'总资产':total_assets,'持仓价值':holding_value,'可用资金':available_fund},index=[context.date[t]])
         context.capital_df=context.capital_df.append(context.current_capital_df)
-        
         
 
     context.outputdata=pd.DataFrame(index=context.date,dtype='float64')
